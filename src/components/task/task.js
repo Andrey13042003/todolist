@@ -2,15 +2,13 @@ import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
 
-import './task.css';
-
 export default class Task extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isEdit: false,
       label: this.props.item.text,
-      checked: '',
+      data: new Date(),
     };
   }
 
@@ -34,57 +32,35 @@ export default class Task extends React.Component {
     });
   };
 
-  isChecked = () => {
-    if (this.state.checked == '') {
-      this.setState({
-        checked: 'checked',
-      });
-    }
-    else {
-      this.setState({
-        checked: '',
-      });
-    }
-  };
-
   render() {
-    const { onDeleted, onToggleDone, data, item, onSubmit } = this.props;
+    const { onDeleted, onToggleDone, item, changeText } = this.props;
+    const { isEdit, data, label } = this.state;
     const result = formatDistanceToNow(data, { includeSeconds: true });
 
     const { id } = item;
     const self = this;
+    let ch = '';
     let classNames = '';
 
-    if (!this.state.isEdit || !item.done) {
+    if (!isEdit || !item.done) {
       classNames = '';
+      ch = '';
     }
 
-    if (this.state.isEdit) {
+    if (isEdit) {
       classNames += 'editing';
     }
 
     if (item.done) {
       classNames += 'completed';
+      ch = 'checked';
     }
 
     return (
       <li key={id} className={classNames}>
         <div className="view">
-          <input
-            className="toggle"
-            type="checkbox"
-            checked={this.state.checked}
-            onChange={function () {
-              onToggleDone(id);
-              self.isChecked();
-            }}
-          />
-          <label
-            onClick={function () {
-              onToggleDone(id);
-              self.isChecked();
-            }}
-          >
+          <input className="toggle" type="checkbox" checked={ch} onChange={() => onToggleDone(id)} />
+          <label onClick={() => onToggleDone(id)}>
             <span className="description">{item.text}</span>
             <span className="created">created {result}</span>
           </label>
@@ -93,18 +69,11 @@ export default class Task extends React.Component {
         </div>
         <form
           onSubmit={function (event) {
-            onSubmit(item.id, self.state.label, event);
+            changeText(item.id, self.state.label, event);
             self.isFalse();
           }}
         >
-          <input
-            id={item.id}
-            type="text"
-            className="edit"
-            onChange={this.onLabelChange}
-            value={this.state.label}
-            autoFocus
-          />
+          <input id={item.id} type="text" className="edit" onChange={this.onLabelChange} value={label} autoFocus />
         </form>
       </li>
     );
@@ -114,7 +83,6 @@ export default class Task extends React.Component {
 Task.propTypes = {
   onDeleted: PropTypes.func.isRequired,
   onToggleDone: PropTypes.func.isRequired,
-  data: PropTypes.number.isRequired,
 };
 
 Task.defaultProps = {

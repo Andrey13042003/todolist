@@ -1,27 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './tasksFilter.css';
-
 export default class TasksFilter extends React.Component {
   render() {
-    const { changeFilter } = this.props;
+    const { changeFilter, filter } = this.props;
+    let all = null;
+    let active = null;
+    let completed = null;
+
+    switch (filter) {
+    case 'all':
+      all = 'selected';
+      break;
+    case 'active':
+      active = 'selected';
+      break;
+    case 'completed':
+      completed = 'selected';
+      break;
+    }
     return (
       <ul className="filters">
         <li>
-          <button className="selected" onClick={() => changeFilter('all')}>
+          <button className={all} onClick={() => changeFilter('all')}>
             All
           </button>
         </li>
         <li>
-          <button onClick={() => changeFilter('active')}>Active</button>
+          <button className={active} onClick={() => changeFilter('active')}>
+            Active
+          </button>
         </li>
         <li>
-          <button onClick={() => changeFilter('completed')}>Completed</button>
-        </li>
-        <li>
-          <button className="clear-completed" onClick={() => changeFilter('clear completed')}>
-            Clear completed
+          <button className={completed} onClick={() => changeFilter('completed')}>
+            Completed
           </button>
         </li>
       </ul>

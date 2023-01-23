@@ -1,18 +1,14 @@
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import Main from '../main';
 import AppHeader from '../app-header';
 import Footer from '../footer';
 
-import './app.css';
-
 export default class App extends React.Component {
-  maxid = 1;
-
   state = {
     filter: 'all',
     todoData: [],
-    date: 0,
   };
 
   onToggleDone = (id) => {
@@ -42,11 +38,9 @@ export default class App extends React.Component {
 
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newItem];
-      let newData = Date.now();
 
       return {
         todoData: newArr,
-        date: newData,
       };
     });
   };
@@ -62,16 +56,15 @@ export default class App extends React.Component {
     });
   };
 
-  //менять текст после нажатия на enter
   createTodoItem(text) {
     return {
       text,
       done: false,
-      id: this.maxid++,
+      id: uuidv4(),
     };
   }
 
-  onSubmit = (id, value, event) => {
+  changeText = (id, value, event) => {
     event.preventDefault();
     this.setState(({ todoData }) => {
       const idx = todoData.findIndex((el) => el.id === id);
@@ -84,29 +77,28 @@ export default class App extends React.Component {
     });
   };
 
+  clearCompleted = () => {
+    this.state.todoData.filter((elem) => {
+      if (elem.done) {
+        this.deleteItem(elem.id);
+      }
+    });
+  };
+
   render() {
-    const doneCount = this.state.todoData.filter((element) => element.done).length;
-    const todoCount = this.state.todoData.length - doneCount;
+    const { filter, todoData } = this.state;
+    const todoCount = todoData.filter((element) => !element.done).length;
     let todoItemsShown;
 
-    switch (this.state.filter) {
+    switch (filter) {
     case 'completed':
-      todoItemsShown = this.state.todoData.filter((elem) => elem.done);
+      todoItemsShown = todoData.filter((elem) => elem.done);
       break;
     case 'active':
-      todoItemsShown = this.state.todoData.filter((elem) => !elem.done);
+      todoItemsShown = todoData.filter((elem) => !elem.done);
       break;
-    case 'clear completed':
-      todoItemsShown = this.state.todoData.filter((elem) => {
-        if (elem.done) {
-          setTimeout(() => {
-            this.deleteItem(elem.id);
-          });
-        }
-      });
-      break;
-    default:
-      todoItemsShown = this.state.todoData;
+    case 'all':
+      todoItemsShown = todoData;
     }
 
     return (
@@ -116,10 +108,14 @@ export default class App extends React.Component {
           todos={todoItemsShown}
           onDeleted={(id) => this.deleteItem(id)}
           onToggleDone={this.onToggleDone}
-          data={this.state.date}
-          onSubmit={(id, value, event) => this.onSubmit(id, value, event)}
+          changeText={(id, value, event) => this.changeText(id, value, event)}
         />
-        <Footer todo={todoCount} done={doneCount} changeFilter={this.changeFilter} />
+        <Footer
+          todo={todoCount}
+          changeFilter={this.changeFilter}
+          clearCompleted={this.clearCompleted}
+          filter={filter}
+        />
       </div>
     );
   }

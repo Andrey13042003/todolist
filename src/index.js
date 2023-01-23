@@ -1,7 +1,7 @@
 import './index.css';
 import ReactDOM from 'react-dom/client';
 
-import App from './components/app.js';
+import App from './components/app';
 
 function ToDoApp() {
   return <App />;
