@@ -19,9 +19,12 @@ Main.propTypes = {
   todos: PropTypes.array.isRequired,
   onDeleted: PropTypes.func.isRequired,
   onToggleDone: PropTypes.func.isRequired,
+  changeText: PropTypes.func.isRequired,
 };
 
 Main.defaultProps = {
   onDeleted() {},
   onToggleDone() {},
+  changeText() {},
+  todos: [],
 };

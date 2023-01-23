@@ -26,9 +26,11 @@ TaskList.propTypes = {
   todos: PropTypes.array.isRequired,
   onDeleted: PropTypes.func.isRequired,
   onToggleDone: PropTypes.func.isRequired,
+  changeText: PropTypes.func.isRequired,
 };
 
 TaskList.defaultProps = {
   onDeleted() {},
   onToggleDone() {},
+  changeText() {},
 };

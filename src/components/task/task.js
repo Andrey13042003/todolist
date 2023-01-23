@@ -83,9 +83,13 @@ export default class Task extends React.Component {
 Task.propTypes = {
   onDeleted: PropTypes.func.isRequired,
   onToggleDone: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired,
+  changeText: PropTypes.func.isRequired,
 };
 
 Task.defaultProps = {
   onDeleted() {},
   onToggleDone() {},
+  item: {},
+  changeText() {},
 };

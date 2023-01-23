@@ -43,8 +43,10 @@ export default class TasksFilter extends React.Component {
 
 TasksFilter.propTypes = {
   changeFilter: PropTypes.func.isRequired,
+  filter: PropTypes.string.isRequired,
 };
 
 TasksFilter.defaultProps = {
   changeFilter() {},
+  filter: '',
 };

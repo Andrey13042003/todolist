@@ -24,8 +24,12 @@ export default class Footer extends React.Component {
 Footer.propTypes = {
   todo: PropTypes.number.isRequired,
   changeFilter: PropTypes.func.isRequired,
+  clearCompleted: PropTypes.func.isRequired,
+  filter: PropTypes.string.isRequired,
 };
 
 Footer.defaultProps = {
   changeFilter() {},
+  clearCompleted() {},
+  filter: '',
 };
