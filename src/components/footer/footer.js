@@ -10,7 +10,7 @@ export default class Footer extends React.Component {
       <footer className="footer">
         <span className="todo-count">
           {todo}
-          neet to do
+          need to do
         </span>
         <TasksFilter changeFilter={changeFilter} filter={filter} />
         <button className="clear-completed" onClick={() => clearCompleted()}>

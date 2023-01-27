@@ -61,11 +61,11 @@ export default class App extends React.Component {
       text,
       done: false,
       id: uuidv4(),
+      date: this.getTaskDate,
     };
   }
 
-  changeText = (id, value, event) => {
-    event.preventDefault();
+  changeText = (id, value) => {
     this.setState(({ todoData }) => {
       const idx = todoData.findIndex((el) => el.id === id);
       const oldElement = todoData[idx];
@@ -78,11 +78,20 @@ export default class App extends React.Component {
   };
 
   clearCompleted = () => {
-    this.state.todoData.filter((elem) => {
-      if (elem.done) {
-        this.deleteItem(elem.id);
+    let newArray = this.state.todoData.filter((elem, idx) => {
+      if (!elem.done) {
+        return [...this.state.todoData.slice(0, idx), ...this.state.todoData.slice(idx + 1)];
       }
     });
+    this.setState(() => {
+      return {
+        todoData: newArray,
+      };
+    });
+  };
+
+  getTaskDate = (date) => {
+    return date;
   };
 
   render() {
@@ -108,7 +117,8 @@ export default class App extends React.Component {
           todos={todoItemsShown}
           onDeleted={(id) => this.deleteItem(id)}
           onToggleDone={this.onToggleDone}
-          changeText={(id, value, event) => this.changeText(id, value, event)}
+          changeText={(id, value) => this.changeText(id, value)}
+          getTaskDate={(date) => this.getTaskDate(date)}
         />
         <Footer
           todo={todoCount}

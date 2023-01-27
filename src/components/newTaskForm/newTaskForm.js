@@ -14,7 +14,6 @@ export default class NewTaskForm extends React.Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    e.currentTarget.value = '';
     if (/\S/.test(this.state.label)) {
       this.props.onItemAdded(this.state.label);
     }
