@@ -5,7 +5,7 @@ import Task from '../task';
 
 export default class TaskList extends React.Component {
   render() {
-    const { todos, onDeleted, onToggleDone, changeText, getTaskDate } = this.props;
+    const { todos, onDeleted, onToggleDone, changeText, time } = this.props;
     const elements = todos.map((item) => {
       return (
         <Task
@@ -14,7 +14,7 @@ export default class TaskList extends React.Component {
           onToggleDone={() => onToggleDone(item.id)} //подобрать id
           item={item}
           changeText={changeText}
-          getTaskDate={getTaskDate}
+          time={time}
         />
       );
     });

@@ -1,10 +1,16 @@
 import React from 'react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, min } from 'date-fns';
+import Countdown from 'react-countdown';
 import PropTypes from 'prop-types';
 
 export default class Task extends React.Component {
   constructor(props) {
     super(props);
+    this.minutes = '';
+    this.seconds = '';
+    this.ref = React.createRef();
+    this.countDown = Date.now() + this.props.time;
+
     this.state = {
       isEdit: false,
       label: this.props.item.text,
@@ -32,12 +38,22 @@ export default class Task extends React.Component {
     });
   };
 
+  handleStart = (e) => {
+    e.stopPropagation();
+    return this.ref.current.start();
+  };
+
+  handleStop = (e) => {
+    e.stopPropagation();
+    this.countDown = Date.now() + (this.minutes * 60 * 1000 + this.seconds * 1000);
+    return this.ref.current.pause();
+  };
+
   render() {
-    const { onDeleted, onToggleDone, item, changeText, getTaskDate } = this.props;
+    const { onDeleted, onToggleDone, item, changeText } = this.props;
     const { isEdit, data, label } = this.state;
     const result = formatDistanceToNow(data, { includeSeconds: true });
-    getTaskDate(result);
-
+    const Completionist = () => <span>Finish!</span>;
     const { id } = item;
     const self = this;
 
@@ -55,6 +71,30 @@ export default class Task extends React.Component {
           />
           <label onClick={() => onToggleDone(id)}>
             <span className="description">{item.text}</span>
+            <span className="created">
+              <button className="icon icon-play" onClick={this.handleStart}></button>
+              <button className="icon icon-pause" onClick={this.handleStop}></button>
+              <Countdown
+                date={this.countDown}
+                zeroPadTime={1}
+                daysInHours={true}
+                autoStart={false}
+                ref={this.ref}
+                renderer={({ minutes, seconds, completed }) => {
+                  if (completed) {
+                    return <Completionist />;
+                  } else {
+                    this.minutes = minutes;
+                    this.seconds = seconds;
+                    return (
+                      <span>
+                        {minutes}: {seconds}
+                      </span>
+                    );
+                  }
+                }}
+              ></Countdown>
+            </span>
             <span className="created">created {result}</span>
           </label>
           <button className="icon icon-edit" onClick={this.isEditing} />

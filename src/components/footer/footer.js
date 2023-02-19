@@ -14,7 +14,7 @@ export default class Footer extends React.Component {
         </span>
         <TasksFilter changeFilter={changeFilter} filter={filter} />
         <button className="clear-completed" onClick={() => clearCompleted()}>
-          Clear completed
+          сlear completed
         </button>
       </footer>
     );

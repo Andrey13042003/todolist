@@ -8,7 +8,7 @@ export default class AppHeader extends React.Component {
     return (
       <header className="header">
         <h1>Todos</h1>
-        <NewTaskForm onItemAdded={this.props.onItemAdded} />
+        <NewTaskForm onItemAdded={this.props.onItemAdded} getTime={this.props.getTime} />
       </header>
     );
   }

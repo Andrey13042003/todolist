@@ -9,6 +9,7 @@ export default class App extends React.Component {
   state = {
     filter: 'all',
     todoData: [],
+    time: '',
   };
 
   onToggleDone = (id) => {
@@ -61,7 +62,6 @@ export default class App extends React.Component {
       text,
       done: false,
       id: uuidv4(),
-      date: this.getTaskDate,
     };
   }
 
@@ -77,21 +77,13 @@ export default class App extends React.Component {
     });
   };
 
-  clearCompleted = () => {
-    let newArray = this.state.todoData.filter((elem, idx) => {
-      if (!elem.done) {
-        return [...this.state.todoData.slice(0, idx), ...this.state.todoData.slice(idx + 1)];
-      }
-    });
-    this.setState(() => {
-      return {
-        todoData: newArray,
-      };
-    });
+  getTime = (min, sec) => {
+    this.setState(() => ({ time: min * 60 * 1000 + sec * 1000 }));
   };
 
-  getTaskDate = (date) => {
-    return date;
+  clearCompleted = () => {
+    let isNotDone = this.state.todoData.filter((el) => !el.done);
+    this.setState(() => ({ todoData: isNotDone }));
   };
 
   render() {
@@ -111,14 +103,14 @@ export default class App extends React.Component {
     }
 
     return (
-      <div>
-        <AppHeader onItemAdded={this.addItem} />
+      <>
+        <AppHeader onItemAdded={this.addItem} getTime={this.getTime} />
         <Main
           todos={todoItemsShown}
           onDeleted={(id) => this.deleteItem(id)}
           onToggleDone={this.onToggleDone}
           changeText={(id, value) => this.changeText(id, value)}
-          getTaskDate={(date) => this.getTaskDate(date)}
+          time={this.state.time}
         />
         <Footer
           todo={todoCount}
@@ -126,7 +118,7 @@ export default class App extends React.Component {
           clearCompleted={this.clearCompleted}
           filter={filter}
         />
-      </div>
+      </>
     );
   }
 }

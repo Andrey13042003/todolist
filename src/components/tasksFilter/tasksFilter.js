@@ -2,25 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default class TasksFilter extends React.Component {
+  filters = ['all', 'active', 'completed'];
   render() {
     const { changeFilter, filter } = this.props;
     return (
       <ul className="filters">
-        <li>
-          <button className={filter == 'all' && 'selected'} onClick={() => changeFilter('all')}>
-            All
-          </button>
-        </li>
-        <li>
-          <button className={filter == 'active' && 'selected'} onClick={() => changeFilter('active')}>
-            Active
-          </button>
-        </li>
-        <li>
-          <button className={filter == 'completed' && 'selected'} onClick={() => changeFilter('completed')}>
-            Completed
-          </button>
-        </li>
+        {this.filters.map((item) => {
+          return (
+            <li key={item}>
+              <button className={filter == item ? 'selected' : undefined} onClick={() => changeFilter(item)}>
+                {item}
+              </button>
+            </li>
+          );
+        })}
       </ul>
     );
   }
