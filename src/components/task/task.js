@@ -1,15 +1,16 @@
 import React from 'react';
-import { formatDistanceToNow, min } from 'date-fns';
-import Countdown from 'react-countdown';
+import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
+
+import CountDown from '../count-down';
 
 export default class Task extends React.Component {
   constructor(props) {
     super(props);
-    this.minutes = '';
-    this.seconds = '';
+    this.minutes = 0;
+    this.seconds = 0;
     this.ref = React.createRef();
-    this.countDown = Date.now() + this.props.time;
+    this.countDown = Date.now() + this.props.item.time;
 
     this.state = {
       isEdit: false,
@@ -49,13 +50,24 @@ export default class Task extends React.Component {
     return this.ref.current.pause();
   };
 
+  changeTime = (min, sec) => {
+    if (typeof min != 'string' && typeof sec != 'string') {
+      this.minutes = min;
+      this.seconds = sec;
+      //сохранять время по id в app в todoData
+      this.props.changeTodoItemTime(min, sec, this.props.item.id);
+    }
+  };
+
   render() {
     const { onDeleted, onToggleDone, item, changeText } = this.props;
+
     const { isEdit, data, label } = this.state;
-    const result = formatDistanceToNow(data, { includeSeconds: true });
-    const Completionist = () => <span>Finish!</span>;
     const { id } = item;
+
+    const result = formatDistanceToNow(data, { includeSeconds: true });
     const self = this;
+    let link = this.ref;
 
     return (
       <li
@@ -69,31 +81,12 @@ export default class Task extends React.Component {
             checked={(!isEdit && !item.done && '') || (item.done && 'checked')}
             onChange={() => onToggleDone(id)}
           />
-          <label onClick={() => onToggleDone(id)}>
+          <label onClick={() => onToggleDone(id)}> {/* Important */}
             <span className="description">{item.text}</span>
             <span className="created">
               <button className="icon icon-play" onClick={this.handleStart}></button>
               <button className="icon icon-pause" onClick={this.handleStop}></button>
-              <Countdown
-                date={this.countDown}
-                zeroPadTime={1}
-                daysInHours={true}
-                autoStart={false}
-                ref={this.ref}
-                renderer={({ minutes, seconds, completed }) => {
-                  if (completed) {
-                    return <Completionist />;
-                  } else {
-                    this.minutes = minutes;
-                    this.seconds = seconds;
-                    return (
-                      <span>
-                        {minutes}: {seconds}
-                      </span>
-                    );
-                  }
-                }}
-              ></Countdown>
+              <CountDown countDown={this.countDown} link={link} changeTime={this.changeTime} /> 
             </span>
             <span className="created">created {result}</span>
           </label>

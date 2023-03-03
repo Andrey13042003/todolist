@@ -15,24 +15,22 @@ export default class NewTaskForm extends React.Component {
   };
 
   onMinuteChange = (e) => {
-    this.setState({ min: e.target.value });
+    let minValue = Number(e.target.value);
+    minValue && minValue < 60 ? this.setState({ min: minValue }) : this.setState({ min: '' });
   };
 
   onSecondChange = (e) => {
-    this.setState({ sec: e.target.value });
+    let secValue = Number(e.target.value);
+    secValue && secValue < 60 ? this.setState({ sec: secValue }) : this.setState({ sec: '' });
   };
 
   onSubmit = (e) => {
     e.preventDefault();
     if (/\S/.test(this.state.label)) {
-      this.props.onItemAdded(this.state.label);
-      if (!this.state.min && !this.state.sec) {
-        this.props.getTime(1, 30);
-      } else {
-        this.props.getTime(this.state.min, this.state.sec);
-      }
+      let time = this.state.min * 60 * 1000 + this.state.sec * 1000;
+      this.props.onItemAdded(this.state.label, time);
     }
-    this.setState({ label: '' });
+    this.setState({ label: '', min: '', sec: '' });
   };
 
   render() {

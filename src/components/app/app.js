@@ -9,7 +9,6 @@ export default class App extends React.Component {
   state = {
     filter: 'all',
     todoData: [],
-    time: '',
   };
 
   onToggleDone = (id) => {
@@ -26,16 +25,10 @@ export default class App extends React.Component {
     return [...arr.slice(0, idx), newItem, ...arr.slice(idx + 1)];
   };
 
-  changeFilter = (name) => {
-    this.setState(() => {
-      return {
-        filter: name,
-      };
-    });
-  };
+  changeFilter = (name) => this.setState(() => ({ filter: name }));
 
-  addItem = (text) => {
-    const newItem = this.createTodoItem(text);
+  addItem = (text, time) => {
+    const newItem = this.createTodoItem(text, time);
 
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newItem];
@@ -57,13 +50,18 @@ export default class App extends React.Component {
     });
   };
 
-  createTodoItem(text) {
+  createTodoItem(text, time = 0) {
     return {
       text,
       done: false,
       id: uuidv4(),
+      time: time,
     };
   }
+
+  changeTodoItemTime = (min, sec, id) => {
+    console.log(min, sec, id);
+  };
 
   changeText = (id, value) => {
     this.setState(({ todoData }) => {
@@ -75,10 +73,6 @@ export default class App extends React.Component {
         todoData: newArray,
       };
     });
-  };
-
-  getTime = (min, sec) => {
-    this.setState(() => ({ time: min * 60 * 1000 + sec * 1000 }));
   };
 
   clearCompleted = () => {
@@ -104,13 +98,13 @@ export default class App extends React.Component {
 
     return (
       <>
-        <AppHeader onItemAdded={this.addItem} getTime={this.getTime} />
+        <AppHeader onItemAdded={this.addItem} />
         <Main
           todos={todoItemsShown}
           onDeleted={(id) => this.deleteItem(id)}
           onToggleDone={this.onToggleDone}
           changeText={(id, value) => this.changeText(id, value)}
-          time={this.state.time}
+          changeTodoItemTime={(min, sec, id) => this.changeTodoItemTime(min, sec, id)}
         />
         <Footer
           todo={todoCount}

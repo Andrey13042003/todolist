@@ -5,16 +5,17 @@ import Task from '../task';
 
 export default class TaskList extends React.Component {
   render() {
-    const { todos, onDeleted, onToggleDone, changeText, time } = this.props;
+    const { todos, onDeleted, onToggleDone, changeText, changeTodoItemTime, filter } = this.props;
     const elements = todos.map((item) => {
       return (
         <Task
-          key={item.id} //подобрать id
+          key={item.id}
           onDeleted={onDeleted}
-          onToggleDone={() => onToggleDone(item.id)} //подобрать id
+          onToggleDone={() => onToggleDone(item.id)}
           item={item}
           changeText={changeText}
-          time={time}
+          changeTodoItemTime={changeTodoItemTime}
+          filter={filter}
         />
       );
     });
