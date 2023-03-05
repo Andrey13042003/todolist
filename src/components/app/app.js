@@ -62,16 +62,20 @@ export default class App extends React.Component {
   }
 
   tick = (id) => {
-    this.setState(({ todoData }) => {
-      const idx = todoData.findIndex((el) => el.id === id);
-      const oldItem = todoData[idx];
-      const count = oldItem.time;
-      const newItem = { ...oldItem, time: count - 1 };
-      const newArray = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
-      return {
-        todoData: newArray,
-      };
-    });
+    const { todoData } = this.state;
+    const idx = todoData.findIndex((el) => el.id === id);
+    const oldItem = todoData[idx];
+
+    if (oldItem.time > 0) {
+      this.setState(({ todoData }) => {
+        const count = oldItem.time;
+        const newItem = { ...oldItem, time: count - 1 };
+        const newArray = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
+        return {
+          todoData: newArray,
+        };
+      });
+    }
   };
 
   onClickPlay = (id, e) => {
