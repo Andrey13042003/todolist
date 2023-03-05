@@ -1,1 +1,1 @@
-https://todolist-andrey13042003.vercel.app
+https://todolist-timer-andrey13042003.vercel.app
