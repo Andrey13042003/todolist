@@ -27,7 +27,7 @@ export default class NewTaskForm extends React.Component {
   onSubmit = (e) => {
     e.preventDefault();
     if (/\S/.test(this.state.label)) {
-      let time = this.state.min * 60 * 1000 + this.state.sec * 1000;
+      let time = this.state.min * 60 + this.state.sec;
       this.props.onItemAdded(this.state.label, time);
     }
     this.setState({ label: '', min: '', sec: '' });

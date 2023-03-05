@@ -5,14 +5,14 @@ import TasksFilter from '../tasksFilter';
 
 export default class Footer extends React.Component {
   render() {
-    const { todo, changeFilter, clearCompleted, filter } = this.props;
+    const { todo, changeFilter, clearCompleted, filter, allPaused } = this.props;
     return (
       <footer className="footer">
         <span className="todo-count">
           {todo}
           need to do
         </span>
-        <TasksFilter changeFilter={changeFilter} filter={filter} />
+        <TasksFilter changeFilter={changeFilter} filter={filter} allPaused={allPaused} />
         <button className="clear-completed" onClick={() => clearCompleted()}>
           сlear completed
         </button>

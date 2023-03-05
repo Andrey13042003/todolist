@@ -5,7 +5,7 @@ import TaskList from '../taskList';
 
 export default class Main extends React.Component {
   render() {
-    const { todos, onDeleted, onToggleDone, changeText, changeTodoItemTime, filter } = this.props;
+    const { todos, onDeleted, onToggleDone, changeText, filter, tick, onClickPaused, onClickPlay } = this.props;
     return (
       <section className="main">
         <TaskList
@@ -13,8 +13,10 @@ export default class Main extends React.Component {
           todos={todos}
           onToggleDone={onToggleDone}
           changeText={changeText}
-          changeTodoItemTime={changeTodoItemTime}
           filter={filter}
+          tick={tick}
+          onClickPaused={onClickPaused}
+          onClickPlay={onClickPlay}
         />
       </section>
     );

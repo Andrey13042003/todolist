@@ -7,10 +7,7 @@ import CountDown from '../count-down';
 export default class Task extends React.Component {
   constructor(props) {
     super(props);
-    this.minutes = 0;
-    this.seconds = 0;
     this.ref = React.createRef();
-    this.countDown = Date.now() + this.props.item.time;
 
     this.state = {
       isEdit: false,
@@ -39,35 +36,14 @@ export default class Task extends React.Component {
     });
   };
 
-  handleStart = (e) => {
-    e.stopPropagation();
-    return this.ref.current.start();
-  };
-
-  handleStop = (e) => {
-    e.stopPropagation();
-    this.countDown = Date.now() + (this.minutes * 60 * 1000 + this.seconds * 1000);
-    return this.ref.current.pause();
-  };
-
-  changeTime = (min, sec) => {
-    if (typeof min != 'string' && typeof sec != 'string') {
-      this.minutes = min;
-      this.seconds = sec;
-      //сохранять время по id в app в todoData
-      this.props.changeTodoItemTime(min, sec, this.props.item.id);
-    }
-  };
-
   render() {
-    const { onDeleted, onToggleDone, item, changeText } = this.props;
+    const { onDeleted, onToggleDone, item, changeText, filter, tick, onClickPaused, onClickPlay } = this.props;
 
     const { isEdit, data, label } = this.state;
     const { id } = item;
 
     const result = formatDistanceToNow(data, { includeSeconds: true });
     const self = this;
-    let link = this.ref;
 
     return (
       <li
@@ -79,14 +55,14 @@ export default class Task extends React.Component {
             className="toggle"
             type="checkbox"
             checked={(!isEdit && !item.done && '') || (item.done && 'checked')}
-            onChange={() => onToggleDone(id)}
+            onChange={(e) => onToggleDone(id, e)}
           />
-          <label onClick={() => onToggleDone(id)}> {/* Important */}
+          <label onClick={(e) => onToggleDone(id, e)}>
             <span className="description">{item.text}</span>
             <span className="created">
-              <button className="icon icon-play" onClick={this.handleStart}></button>
-              <button className="icon icon-pause" onClick={this.handleStop}></button>
-              <CountDown countDown={this.countDown} link={link} changeTime={this.changeTime} /> 
+              <button className="icon icon-play" onClick={(e) => onClickPlay(id, e)}></button>
+              <button className="icon icon-pause" onClick={(e) => onClickPaused(id, e)}></button>
+              <CountDown time={item.time} tick={tick} id={id} timerActive={item.timerActive} />
             </span>
             <span className="created">created {result}</span>
           </label>

@@ -6,12 +6,14 @@ import AppHeader from '../app-header';
 import Footer from '../footer';
 
 export default class App extends React.Component {
+  target = '';
   state = {
     filter: 'all',
     todoData: [],
   };
 
-  onToggleDone = (id) => {
+  onToggleDone = (id, e) => {
+    this.target = e.target;
     this.setState(({ todoData }) => ({
       todoData: this.toggleProperty(todoData, id, 'done'),
     }));
@@ -29,7 +31,6 @@ export default class App extends React.Component {
 
   addItem = (text, time) => {
     const newItem = this.createTodoItem(text, time);
-
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newItem];
 
@@ -50,17 +51,73 @@ export default class App extends React.Component {
     });
   };
 
-  createTodoItem(text, time = 0) {
+  createTodoItem(text, time) {
     return {
       text,
       done: false,
       id: uuidv4(),
       time: time,
+      timerActive: false,
     };
   }
 
-  changeTodoItemTime = (min, sec, id) => {
-    console.log(min, sec, id);
+  tick = (id) => {
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id);
+      const oldItem = todoData[idx];
+      const count = oldItem.time;
+      const newItem = { ...oldItem, time: count - 1 };
+      const newArray = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
+      return {
+        todoData: newArray,
+      };
+    });
+  };
+
+  onClickPlay = (id, e) => {
+    e.stopPropagation();
+    if (!this.target) {
+      this.setState(({ todoData }) => {
+        const idx = todoData.findIndex((el) => el.id === id);
+        const oldItem = todoData[idx];
+        const newItem = { ...oldItem, timerActive: true };
+  
+        const newArray = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
+  
+        return {
+          todoData: newArray,
+        };
+      });
+    }
+    this.target = '';
+  };
+
+  onClickPaused = (id, e) => {
+    e.stopPropagation();
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id);
+      const oldItem = todoData[idx];
+      const newItem = { ...oldItem, timerActive: false };
+
+      const newArray = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)];
+
+      return {
+        todoData: newArray,
+      };
+    });
+  };
+
+  allPaused = () => {
+    this.setState(({ todoData }) => {
+      const newData = todoData;
+      const elements = newData.map((el) => {
+        return { ...el, timerActive: false };
+      });
+
+      return {
+        todoData: elements,
+      };
+    });
   };
 
   changeText = (id, value) => {
@@ -102,13 +159,17 @@ export default class App extends React.Component {
         <Main
           todos={todoItemsShown}
           onDeleted={(id) => this.deleteItem(id)}
-          onToggleDone={this.onToggleDone}
+          onToggleDone={(id, e) => this.onToggleDone(id, e)}
           changeText={(id, value) => this.changeText(id, value)}
-          changeTodoItemTime={(min, sec, id) => this.changeTodoItemTime(min, sec, id)}
+          filter={filter}
+          tick={(id) => this.tick(id)}
+          onClickPaused={(id, e) => this.onClickPaused(id, e)}
+          onClickPlay={(id, e) => this.onClickPlay(id, e)}
         />
         <Footer
           todo={todoCount}
           changeFilter={this.changeFilter}
+          allPaused={this.allPaused}
           clearCompleted={this.clearCompleted}
           filter={filter}
         />
